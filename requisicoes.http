@@ -1,0 +1,54 @@
+@baseUrl = http://localhost:8080
+@setorId = 1
+@categoriaId = 2
+@solicitanteId = 3
+@tecnicoId = 1
+@chamadoId = 1
+
+### Cria um setor. Use valores únicos caso os dados iniciais já tenham sido inseridos.
+POST {{baseUrl}}/setores
+Content-Type: application/json
+
+{
+  "nome": "Biblioteca",
+  "sigla": "BIB"
+}
+
+### Cria um técnico e valida a associação obrigatória com um setor existente.
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nome": "João Técnico",
+  "email": "joao.tecnico@ifrn.edu.br",
+  "matricula": 100003,
+  "tipo": "TECNICO",
+  "setor": {
+    "id": {{setorId}}
+  }
+}
+
+### Abre um chamado. Valida solicitante, categoria, status ABERTO e prioridade informada.
+POST {{baseUrl}}/chamados
+Content-Type: application/json
+
+{
+  "titulo": "Projetor sem imagem",
+  "descricao": "O projetor do laboratório 3 liga, mas não exibe imagem.",
+  "local": "Laboratório 3",
+  "prioridade": "ALTA",
+  "categoria": {
+    "id": {{categoriaId}}
+  },
+  "solicitante": {
+    "id": {{solicitanteId}}
+  }
+}
+
+### Técnico do mesmo setor assume o chamado e altera o status para EM_ATENDIMENTO.
+PATCH {{baseUrl}}/chamados/{{chamadoId}}/assumir
+Content-Type: application/json
+
+{
+  "tecnicoId": {{tecnicoId}}
+}
